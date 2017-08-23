@@ -23,7 +23,7 @@ html body {
   position: relative;
   height: 1050px;
   width: 1050px;
-  background-image: url('../img/debug-grid-1920x1920.png');
+  background-image: url('../img/debug-grid.png');
 }
 .player {
   background-color: lime;
