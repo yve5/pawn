@@ -56,6 +56,13 @@ var htmlEntities = function (input, output) {
             console.log('ERROR : ', filepath + ' does not exist !!!');
         }
     }))
+    .pipe($.htmlmin({
+        conservativeCollapse: true,
+        collapseWhitespace: true,
+        removeComments: true,
+        minifyCSS: true,
+        minifyJS: true
+    }))
     .pipe(gulp.dest(output));
 };
 
