@@ -1,0 +1,66 @@
+html {
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+html body {
+  background-color: #eee;
+  vertical-align: middle;
+  display: table-cell;
+  padding: 0;
+  margin: 0;
+}
+.container {
+  background-color: #fff;
+  overflow: hidden;
+  margin: auto;
+  height: 500px;
+  width: 809px;
+}
+.grid {
+  position: relative;
+  height: 1050px;
+  width: 1050px;
+  background-image: url('../img/debug-grid-1920x1920.png');
+}
+.player {
+  background-color: lime;
+  height: 70px;
+  width: 70px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.player--move-a1-b1 {
+  top: 70px;
+  left: 0;
+}
+.player--move-b1-b1 {
+  top: 70px;
+  left: 0;
+}
+.player--move-c1-b1 {
+  top: 70px;
+  left: 0;
+}
+.player--move-d1-b1 {
+  top: 70px;
+  left: 0;
+}
+.player--move-a1-b1 {
+  top: 70px;
+  left: 0;
+}
+@keyframes move-a1-b1 {
+  0% {
+    top: 0;
+  }
+  50% {
+    left: 5px;
+  }
+  100% {
+    top: 70px;
+  }
+}

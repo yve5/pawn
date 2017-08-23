@@ -1,0 +1,10 @@
+/node_modules
+/dist
+/.tmp
+/bower_components
+/dependencies
+/nbproject
+*.ogg
+*.mp3
+/app/vendor
+bundle.js

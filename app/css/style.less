@@ -1,0 +1,115 @@
+html {
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    display: table;
+    height: 100%;
+    width: 100%;
+
+    body {
+        background-color: #eee;
+        vertical-align: middle;
+        display: table-cell;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+
+@container-width: 500px;
+@grid-width: 500px;
+@cell-width: 70px;
+
+@aze: 20px;
+
+.container {
+    background-color: #fff;
+    overflow: hidden;
+    margin: auto;
+
+    height: @container-width;
+    width: @container-width * 1.618;
+}
+
+.grid {
+    position: relative;
+
+    height: @cell-width * 15;
+    width: @cell-width * 15;
+
+    background-image: url('../img/debug-grid-1920x1920.png');
+}
+
+.player {
+    background-color: lime;
+    height: @cell-width;
+    width: @cell-width;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    // transition: all 200ms linear;
+    // transition: all 200ms ease;
+}
+
+
+
+@grid-row: a, b, c, d;
+
+.makeClasses(@grid-row);
+
+.makeClasses(@list) {
+    .iter(length(@list));
+
+    .iter(@i) when (@i > 0) {
+        .iter(@i - 1);
+
+        @letter: extract(@list, @i);
+
+        // @pair:  extract(@list, @i);
+        // @value: extract(@pair, 1);
+        // @key:   extract(@pair, 2);
+
+        .player--move-@{letter}1-b1 {
+            top: @cell-width;
+            left: 0;
+        }
+
+        // .@{prefix}-@{key}-text {
+        //     color: @value;
+        // }
+    }
+}
+
+
+
+
+.move--hoz-loop(@counter) when (@counter > 0) {
+    .move--hoz-loop((@counter - 1));
+
+    width: (10px * @counter);
+}
+
+
+
+.player--move-a1-b1 {
+    top: @cell-width;
+    left: 0;
+
+    // transition: all 200ms linear;
+
+    // animation: move-a1-b1 400ms linear;
+    // animation: move-a1-b1 400ms ease-in;
+}
+
+@keyframes move-a1-b1 {
+    0% {
+        top: 0;
+    }
+    50% {
+        left: 5px;
+    }
+    100% {
+        top: @cell-width;
+    }
+}
