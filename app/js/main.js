@@ -34,6 +34,13 @@ var keys = [];
 var maxSpeed = 300;
 
 var lockedMove = null;
+var endMove = false;
+
+var keys = []
+keys[37] = false;
+keys[38] = false;
+keys[39] = false;
+keys[40] = false;
 
 
 window.onload = function init() {
@@ -61,8 +68,8 @@ window.addEventListener("keydown", function (eve) {
 
 window.addEventListener("keyup", function (eve) {
     keys[eve.keyCode] = false;
-    lockedMove = null;
-    offset = 0;
+    // lockedMove = null;
+    // offset = 0;
 });
 
 
@@ -96,8 +103,8 @@ function handleEnd (event) {
     keys[39] = false;
     keys[40] = false;
     
-    lockedMove = null;
-    offset = 0;
+    // lockedMove = null;
+    // offset = 0;
 }
 
 function handleCancel (event) {
@@ -154,56 +161,102 @@ function gameLoop() {
 }
 
 function whatKey() {
-    if (lockedMove !== null) {
-        // console.log('hello, value');
-        
-        if (offset <= 10) {
-            // offset += Math.floor(0.5);
-            offset += 1;
+    if (keys[37] === false && keys[38] === false && keys[39] === false && keys[40] === false) {
+        if (offset > 0) {
+            offset -= 0.5;
+            endMove = true;
+        }
+
+        if (offset <= 0) {
+            lockedMove = null;
+            endMove = false;
+            offset = 0; 
+        }
+    }
+    else {
+        if (lockedMove !== null) {
+            if (offset < 20) {
+                offset += 0.3;
+            }
         }
     }
     
     // left
-    if (keys[37] && (lockedMove === 37)) {
+    if ((keys[37] || endMove) && (lockedMove === 37)) {
         if (playerPositionX > 0) {
-            playerPositionX -= offset;
+            playerPositionX -= Math.ceil(offset);
+
+            if (playerPositionX < 0) {
+                playerPositionX = 0;
+            }
         }
         
         if ((gridPositionX + playerPositionX) < insight && gridPositionX < 0) {
-            gridPositionX += offset;
+            gridPositionX += Math.ceil(offset);
+
+            if (gridPositionX > 0) {
+                gridPositionX = 0;
+            }
         }
     }
     
     // top
-    if (keys[38] && (lockedMove === 38)) {
+    if ((keys[38] || endMove) && (lockedMove === 38)) {
         if (playerPositionY > 0) {
-            playerPositionY -= offset;
+            playerPositionY -= Math.ceil(offset);
+
+            if (playerPositionY < 0) {
+                playerPositionY = 0;
+            }
         }
-        
+
         if ((gridPositionY + playerPositionY) < insight && gridPositionY < 0) {
-            gridPositionY += offset;
+            gridPositionY += Math.ceil(offset);
+
+            if (gridPositionX > 0) {
+                gridPositionX = 0;
+            }
         }
     }
     
     // right
-    if (keys[39] && (lockedMove === 39)) {
+    if ((keys[39] || endMove) && (lockedMove === 39)) {
         if (playerPositionX < (1920 - 70)) {
-            playerPositionX += offset;
+            playerPositionX += Math.ceil(offset);
+
+            if (playerPositionX > (1920 - 70)) {
+                playerPositionX = 1920 - 70;
+            }
         }
         
         if ((gridPositionX + playerPositionX) > (800 - 70 - insight) && (gridPositionX * -1) < (1920 - 800)) {
-            gridPositionX -= offset;
+            gridPositionX -= Math.ceil(offset);
+
+            if (gridPositionX < (-1920 + 800)) {
+                gridPositionX = (-1920 + 800);
+            }
         }
     }
     
     // bottom
-    if (keys[40] && (lockedMove === 40)) {
+    if ((keys[40] || endMove) && (lockedMove === 40)) {
         if (playerPositionY < (1920 - 70)) {
-            playerPositionY += offset;
+            playerPositionY += Math.ceil(offset);
+
+            if (playerPositionY > (1920 - 70)) {
+                playerPositionY = 1920 - 70;
+            }
         }
         
         if ((gridPositionY + playerPositionY) > (500 - 70 - insight) && (gridPositionY * -1) < (1920 - 500)) {
-            gridPositionY -= offset;
+            gridPositionY -= Math.ceil(offset);
+
+            if (gridPositionY < (-1920 + 500)) {
+
+                console.log(gridPositionY);
+
+                gridPositionY = (-1920 + 500);
+            }
         }
     }
     
