@@ -19,9 +19,17 @@ var lastY;
 var lastX;
 var approx = 5;
 
-var velX = 0;
-var velY = 0;
-var offset = 7;
+var gridPositionX = 0;
+var gridPositionY = 0;
+var playerPositionX = 0;
+var playerPositionY = 0;
+
+
+// var offset = 10;
+var offset = 0;
+var insight = 160;
+
+
 var keys = [];
 var maxSpeed = 300;
 
@@ -54,6 +62,7 @@ window.addEventListener("keydown", function (eve) {
 window.addEventListener("keyup", function (eve) {
     keys[eve.keyCode] = false;
     lockedMove = null;
+    offset = 0;
 });
 
 
@@ -88,6 +97,7 @@ function handleEnd (event) {
     keys[40] = false;
     
     lockedMove = null;
+    offset = 0;
 }
 
 function handleCancel (event) {
@@ -133,41 +143,67 @@ function handleMove (event) {
 function gameLoop() {
     whatKey();
     
-    $("#player").css({"transform":"translate(" + velX + "px, " + velY + "px)"});
+    $("#player").css({"transform":"translate(" + playerPositionX + "px, " + playerPositionY + "px)"});
+    $('#grid').css({"transform":"translate(" + gridPositionX + "px, " + gridPositionY + "px)"});
     
-    // if (lockedMove !== null) {
-    //     console.log('lockedMove', lockedMove);
-    // }
+    $('#debugger').html("Player: " + playerPositionX + " " + playerPositionY
+        + "<br>Grid: " + gridPositionX + " " + gridPositionY
+        + "<br>Delta: " + (gridPositionX + playerPositionX) + " " + (gridPositionY + playerPositionY));
     
     requestAnimationFrame(gameLoop);
 }
 
 function whatKey() {
+    if (lockedMove !== null) {
+        // console.log('hello, value');
+        
+        if (offset <= 10) {
+            // offset += Math.floor(0.5);
+            offset += 1;
+        }
+    }
+    
     // left
     if (keys[37] && (lockedMove === 37)) {
-        if (velX > 0) {
-            velX -= offset;
+        if (playerPositionX > 0) {
+            playerPositionX -= offset;
+        }
+        
+        if ((gridPositionX + playerPositionX) < insight && gridPositionX < 0) {
+            gridPositionX += offset;
         }
     }
     
     // top
     if (keys[38] && (lockedMove === 38)) {
-        if (velY > -0) {
-            velY -= offset;
+        if (playerPositionY > 0) {
+            playerPositionY -= offset;
+        }
+        
+        if ((gridPositionY + playerPositionY) < insight && gridPositionY < 0) {
+            gridPositionY += offset;
         }
     }
     
     // right
     if (keys[39] && (lockedMove === 39)) {
-        if (velX < 500) {
-            velX += offset;
+        if (playerPositionX < (1920 - 70)) {
+            playerPositionX += offset;
+        }
+        
+        if ((gridPositionX + playerPositionX) > (800 - 70 - insight) && (gridPositionX * -1) < (1920 - 800)) {
+            gridPositionX -= offset;
         }
     }
     
     // bottom
     if (keys[40] && (lockedMove === 40)) {
-        if (velY < 430) {
-            velY += offset;
+        if (playerPositionY < (1920 - 70)) {
+            playerPositionY += offset;
+        }
+        
+        if ((gridPositionY + playerPositionY) > (500 - 70 - insight) && (gridPositionY * -1) < (1920 - 500)) {
+            gridPositionY -= offset;
         }
     }
     

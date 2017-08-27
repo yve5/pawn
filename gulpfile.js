@@ -21,14 +21,14 @@ var appConfig = {
 
 // css generation from less
 gulp.task('less', function () {
-    return gulp.src(appConfig.app + '/css/**/*.less')
-    .pipe($.less())
-    .on('error', function (message) {
-        console.log(message);
-        this.emit('end');
-    })
-    .pipe(gulp.dest(appConfig.app + '/css'))
-    .pipe(reload({ stream: true })); });
+    return gulp.src(appConfig.app + '/css/**/[^_]*.less')
+        .pipe($.less())
+        .on('error', function (message) {
+            console.log(message);
+            this.emit('end');
+        })
+        .pipe(gulp.dest(appConfig.app + '/css'))
+        .pipe(reload({ stream: true })); });
 
 
 // html optimization
