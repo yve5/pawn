@@ -9,7 +9,6 @@
 
 
 
-
 var supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
 var tapped = false;
 
@@ -160,6 +159,7 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
+
 function whatKey() {
     if (keys[37] === false && keys[38] === false && keys[39] === false && keys[40] === false) {
         if (offset > 0) {
@@ -175,7 +175,7 @@ function whatKey() {
     }
     else {
         if (lockedMove !== null) {
-            if (offset < 20) {
+            if (offset < 10) {
                 offset += 0.3;
             }
         }
