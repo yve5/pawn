@@ -3,19 +3,35 @@
 <head>
     <meta charset="utf-8">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
-
+    
     <link rel="stylesheet" href="css/style.css"/>
     <title>Pawn</title>
 </head>
 <body>
+   
+    <div class="container">
+        <div class="grid grid--bis" data-bind="style: {transform: 'translate(' + gridPositionX() + 'px, ' + gridPositionY() + 'px)'}">
+            <div class="player" data-bind="style: {transform: 'translate(' + playerPositionX() + 'px, ' + playerPositionY() + 'px)'}"></div>
+        </div>
+    </div>
+    
+    
     <div class="container">
         <div id="grid" class="grid">
             <div id="player" class="player"></div>
         </div>
     </div>
-
+    
+    
+    <div class="debugger debugger--bis">
+        Player: <span data-bind="text: playerPositionX()"></span> <span data-bind="text: playerPositionX()"></span>
+        <br>
+        Grid: <span data-bind="text: gridPositionX()"></span> <span data-bind="text: gridPositionY()"></span>
+        <br>
+        Delta: <span data-bind="text: (gridPositionX() + playerPositionX())"></span> <span data-bind="text: (gridPositionY() + playerPositionY())"></span>
+    </div>
     <div id="debugger" class="debugger"></div>
-
+    
     <script src="js/jquery.js"></script>
     <script src="js/knockout.js"></script>
     <script src="js/main.js"></script>
