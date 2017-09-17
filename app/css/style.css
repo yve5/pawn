@@ -29,28 +29,19 @@ html body {
   background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
   background-image: linear-gradient(#0B4FD3 2px, transparent 2px), linear-gradient(90deg, #0B4FD3 2px, transparent 2px), linear-gradient(#0072bc 1px, transparent 1px), linear-gradient(90deg, #0072bc 1px, transparent 1px);
 }
-.grid--bis {
-  background-color: #FF3A35;
-  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
-  background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
-  background-image: linear-gradient(#E82574 2px, transparent 2px), linear-gradient(90deg, #E82574 2px, transparent 2px), linear-gradient(#E82574 1px, transparent 1px), linear-gradient(90deg, #E82574 1px, transparent 1px);
-}
 .player {
   background-color: lime;
   height: 70px;
   width: 70px;
 }
+.player--evo {
+  background-color: orange;
+}
 .debugger {
   background-color: rgba(0, 255, 0, 0.4);
-  text-align: right;
-  position: absolute;
-  right: 0;
-  top: 0;
-  border-radius: 0 0 0 5px;
+  text-align: left;
   padding: 5px;
-}
-.debugger--bis {
-  border-radius: 5px 0 0 0;
-  top: initial;
+  position: absolute;
   bottom: 0;
+  left: 0;
 }

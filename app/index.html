@@ -8,29 +8,36 @@
     <title>Pawn</title>
 </head>
 <body>
-   
     <div class="container">
-        <div class="grid grid--bis" data-bind="style: {transform: 'translate(' + gridPositionX() + 'px, ' + gridPositionY() + 'px)'}">
-            <div class="player" data-bind="style: {transform: 'translate(' + playerPositionX() + 'px, ' + playerPositionY() + 'px)'}"></div>
+        <div class="grid" data-bind="style: {transform: 'translate(' + gridPositionX() + 'px, ' + gridPositionY() + 'px)'}">
+            <div class="player" data-bind="style: {'transform': 'translate(' + playerPositionX() + 'px, ' + playerPositionY() + 'px)'}, css: {'player--evo': spaceKey()}"></div>
         </div>
     </div>
     
+    <div class="debugger">
+        <!--
+        <div>Player: <span data-bind="text: playerPositionX()"></span> <span data-bind="text: playerPositionX()"></span></div>
+        <div>Grid: <span data-bind="text: gridPositionX()"></span> <span data-bind="text: gridPositionY()"></span></div>
+        Delta: <span data-bind="text: (gridPositionX() + playerPositionX())"></span> <span data-bind="text: (gridPositionY() + playerPositionY())"></span>
+         -->
+        
+        <div>offset: <span data-bind="text: offset()"></span></div>
+        <div>lockedMove: <span data-bind="text: lockedMove()"></span></div>
+        <div>moveRight: <span data-bind="text: moveRight()"></span></div>
+        <div>stopMove: <span data-bind="text: stopMove()"></span></div>
+    </div>
     
+    
+    
+    <!--
     <div class="container">
-        <div id="grid" class="grid">
+        <div id="grid" class="grid grid--bis">
             <div id="player" class="player"></div>
         </div>
     </div>
     
-    
-    <div class="debugger debugger--bis">
-        Player: <span data-bind="text: playerPositionX()"></span> <span data-bind="text: playerPositionX()"></span>
-        <br>
-        Grid: <span data-bind="text: gridPositionX()"></span> <span data-bind="text: gridPositionY()"></span>
-        <br>
-        Delta: <span data-bind="text: (gridPositionX() + playerPositionX())"></span> <span data-bind="text: (gridPositionY() + playerPositionY())"></span>
-    </div>
-    <div id="debugger" class="debugger"></div>
+    <div id="debugger" class="debugger debugger--bis"></div>
+     -->
     
     <script src="js/jquery.js"></script>
     <script src="js/knockout.js"></script>

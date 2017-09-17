@@ -1,13 +1,20 @@
 function PawnViewModel() {
     var self = this;
 
-    self.touchSupport = 'ontouchstart' in window || navigator.msMaxTouchPoints;
- 
+    self.touchSupport    = 'ontouchstart' in window || navigator.msMaxTouchPoints;
     self.playerPositionX = ko.observable(0);
     self.playerPositionY = ko.observable(0);
- 
-    self.gridPositionX = ko.observable(0);
-    self.gridPositionY = ko.observable(0);
+    self.gridPositionX   = ko.observable(0);
+    self.gridPositionY   = ko.observable(0);
+    self.lockedMove      = ko.observable(false);
+    self.moveTop         = ko.observable(false);
+    self.moveRight       = ko.observable(false);
+    self.moveBottom      = ko.observable(false);
+    self.moveLeft        = ko.observable(false);
+    self.stopMove        = ko.observable(false);
+    self.offset          = ko.observable(1);
+    self.insight         = ko.observable(160);
+    self.spaceKey        = ko.observable(false);
     
 
     self.init = function() {
@@ -32,6 +39,8 @@ function PawnViewModel() {
     }
 
     self.loopGame = function() {
+        self.handleAnimation();
+
         // self.playerPositionX(self.playerPositionX() + 1);
         // self.playerPositionY(self.playerPositionY() + 1);
        
@@ -42,15 +51,45 @@ function PawnViewModel() {
     }
 
     self.resizeContainer = function() {
-        console.log('resizeContainer');
+        // console.log('resizeContainer');
     }
 
     self.handleKeydown = function(eve) {
-        console.log('handleKeydown', eve);
+        // console.log('handleKeydown', eve);
+
+        if (self.lockedMove() === false) {
+            if (eve.keyCode === 32) {
+                self.spaceKey(true);
+            }
+
+            if (eve.keyCode === 37) {
+               self.lockedMove('left');
+               self.moveLeft(true);
+            }
+            
+            if (eve.keyCode === 38) {
+               self.lockedMove('top');
+               self.moveTop(true);
+            }
+
+            if (eve.keyCode === 39) {
+               self.lockedMove('right');
+               self.moveRight(true);
+            }
+
+            if (eve.keyCode === 40) {
+               self.lockedMove('bottom');
+               self.moveBottom(true);
+            }
+        }
     }
 
     self.handleKeyup = function(eve) {
-        console.log('handleKeyup', eve);
+        self.moveTop(false);
+        self.moveRight(false);
+        self.moveBottom(false);
+        self.moveLeft(false);
+        self.spaceKey(false);
     }
 
     self.handleStart = function(eve) {
@@ -69,8 +108,105 @@ function PawnViewModel() {
         console.log('handleMove', eve);
     }
 
-    self.whatKey = function() {
-        console.log('whatKey');
+    self.handleAnimation = function() {
+
+        if (!self.moveLeft() && !self.moveTop() && !self.moveRight() && !self.moveBottom()) {
+            if (self.offset() > 0) {
+                self.offset(self.offset() - 0.5);
+            }
+            else {
+                self.lockedMove(false);
+                self.stopMove(false);
+                self.offset(0);
+            }
+        }
+        else {
+            if (self.lockedMove() !== false) {
+                if (self.offset() < 10) {
+                    self.offset(self.offset() + 0.3);
+                }
+                else if (self.offset() > 10) {
+                    self.offset(10);
+                }
+            }
+        }
+
+       
+        if (self.lockedMove() === 'left') {
+            if (self.playerPositionX() > 0) {
+                self.playerPositionX(self.playerPositionX() - Math.ceil(self.offset()));
+     
+                if (self.playerPositionX() < 0) {
+                    self.playerPositionX(0);
+                }
+            }
+            
+            if ((self.gridPositionX() + self.playerPositionX()) < self.insight() && self.gridPositionX() < 0) {
+                self.gridPositionX(self.gridPositionX() + Math.ceil(self.offset()));
+     
+                if (self.gridPositionX() > 0) {
+                    self.gridPositionX(0);
+                }
+            }
+        }
+        
+       
+        if (self.lockedMove() === 'top') {
+            if (self.playerPositionY() > 0) {
+                self.playerPositionY(self.playerPositionY() - Math.ceil(self.offset()));
+     
+                if (self.playerPositionY() < 0) {
+                    self.playerPositionY(0);
+                }
+            }
+     
+            if ((self.gridPositionY() + self.playerPositionY()) < self.insight() && self.gridPositionY() < 0) {
+                self.gridPositionY(self.gridPositionY() + Math.ceil(self.offset()));
+     
+                if (self.gridPositionY() > 0) {
+                    self.gridPositionY(0);
+                }
+            }
+        }
+       
+
+        if (self.lockedMove() === 'right') {
+            if (self.playerPositionX() < (1920 - 70)) {
+                self.playerPositionX(self.playerPositionX() + Math.ceil(self.offset()));
+                // self.playerPositionX(self.playerPositionX() + 10);
+     
+                if (self.playerPositionX() > (1920 - 70)) {
+                    self.playerPositionX(1920 - 70);
+                }
+            }
+           
+            if ((self.gridPositionX() + self.playerPositionX()) > (800 - 70 - self.insight()) && (self.gridPositionX() * -1) < (1920 - 800)) {
+                self.gridPositionX(self.gridPositionX() - Math.ceil(self.offset()));
+     
+                if (self.gridPositionX() < (-1920 + 800)) {
+                    self.gridPositionX(-1920 + 800);
+                }
+            }
+        }
+       
+
+        if (self.lockedMove() === 'bottom') {
+            if (self.playerPositionY() < (1920 - 70)) {
+                self.playerPositionY(self.playerPositionY() + Math.ceil(self.offset()));
+     
+                if (self.playerPositionY() > (1920 - 70)) {
+                    self.playerPositionY(1920 - 70);
+                }
+            }
+           
+            if ((self.gridPositionY() + self.playerPositionY()) > (500 - 70 - self.insight()) && (self.gridPositionY() * -1) < (1920 - 500)) {
+                self.gridPositionY(self.gridPositionY() - Math.ceil(self.offset()));
+     
+                if (self.gridPositionY() < (-1920 + 500)) {
+                    self.gridPositionY(-1920 + 500);
+                }
+            }
+        }
     }
 
 }
@@ -120,7 +256,7 @@ window.onload = function init() {
         document.addEventListener("touchcancel", handleCancel, false);
         document.addEventListener("touchmove", handleMove, false);
        
-        console.log("supportsTouch");
+        // console.log("supportsTouch");
     }
 
     resizeContainer();
