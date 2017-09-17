@@ -28,8 +28,7 @@ function PawnViewModel() {
     self.lastY           = ko.observable(0);
     self.lastX           = ko.observable(0);
     self.approx          = ko.observable(5);
-    self.taped           = null;
-
+    self.taped           = ko.observable(0);
 
     self.init = function() {
         // touch
@@ -54,6 +53,16 @@ function PawnViewModel() {
 
     self.loopGame = function() {
         self.handleAnimation();
+
+        if (self.taped() !== 0) {
+            self.taped(self.taped() + 1);
+        }
+
+        // 400ms
+        if (self.taped() === 31) {
+            self.spaceKey(!self.spaceKey());
+            self.taped(0);
+        }
 
         requestAnimationFrame(self.loopGame);
     }
@@ -101,26 +110,12 @@ function PawnViewModel() {
     self.handleStart = function(eve) {
         self.lastY(event.touches[0].clientY);
         self.lastX(event.touches[0].clientX);
-
-        if (!self.tapped) {
-            self.tapped = setTimeout(function() {
-                // single tapped
-                self.tapped = null;
-                console.log('single', 'tapped');
-            }, 400);
-        }
-        else {
-            // double tapped
-            clearTimeout(self.tapped);
-            self.tapped = null;
-
-            self.spaceKey(!self.spaceKey());
-            console.log('double', 'tapped');
-        }
+        self.taped(1);
     }
 
     self.handleEnd = function(eve) {
         self.handleKeyup();
+        self.taped(0);
     }
 
     self.handleCancel = function(eve) {
@@ -130,7 +125,8 @@ function PawnViewModel() {
     self.handleMove = function(eve) {
         self.currentY(event.touches[0].clientY);
         self.currentX(event.touches[0].clientX);
-       
+        self.taped(0);
+
         if (self.lockedMove() === false) {
             if (self.currentY() > (self.lastY() + self.approx())) {
                 self.lockedMove('bottom');
