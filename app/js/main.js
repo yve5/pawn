@@ -1,6 +1,9 @@
 function PawnViewModel() {
     var self = this;
 
+    //
+    // attributes
+
     self.touchSupport    = 'ontouchstart' in window || navigator.msMaxTouchPoints;
     self.lockedMove      = ko.observable(false);
     self.insight         = ko.observable(160);
@@ -30,6 +33,9 @@ function PawnViewModel() {
     self.approx          = ko.observable(5);
     self.taped           = ko.observable(0);
 
+    //
+    // not tested
+
     self.init = function() {
         // touch
         if (self.touchSupport) {
@@ -53,16 +59,7 @@ function PawnViewModel() {
 
     self.loopGame = function() {
         self.handleAnimation();
-
-        if (self.taped() !== 0) {
-            self.taped(self.taped() + 1);
-        }
-
-        // 400ms
-        if (self.taped() === 31) {
-            self.spaceKey(!self.spaceKey());
-            self.taped(0);
-        }
+        self.isTaped();
 
         requestAnimationFrame(self.loopGame);
     }
@@ -97,14 +94,6 @@ function PawnViewModel() {
                self.moveBottom(true);
             }
         }
-    }
-
-    self.handleKeyup = function(eve) {
-        self.moveTop(false);
-        self.moveRight(false);
-        self.moveBottom(false);
-        self.moveLeft(false);
-        // self.spaceKey(false);
     }
 
     self.handleStart = function(eve) {
@@ -149,6 +138,28 @@ function PawnViewModel() {
        
         self.lastY(self.currentY());
         self.lastX(self.currentX());
+    }
+
+    //
+    // tested
+
+    self.handleKeyup = function(eve) {
+        self.moveTop(false);
+        self.moveRight(false);
+        self.moveBottom(false);
+        self.moveLeft(false);
+    }
+
+    self.isTaped = function(eve) {
+        if (self.taped() !== 0) {
+            self.taped(self.taped() + 1);
+        }
+
+        // 31th frame => 400ms
+        if (self.taped() === 31) {
+            self.spaceKey(!self.spaceKey());
+            self.taped(0);
+        }
     }
 
     self.handleAnimation = function() {

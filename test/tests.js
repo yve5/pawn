@@ -1,11 +1,22 @@
-QUnit.test( "The firstname is John", function(assert) {
-    assert.ok(avm.firstName() == "John");
+QUnit.test('handleKeyup', function(assert) {
+    pvm.handleKeyup();
+
+    assert.ok(pvm.moveTop() === false);
+    assert.ok(pvm.moveRight() === false);
+    assert.ok(pvm.moveBottom() === false);
+    assert.ok(pvm.moveRight() === false);
 });
 
-QUnit.test( "The firstname is Bertington", function(assert) {
-    assert.ok(avm.lastName() == "Bertington");
+QUnit.test('handleKeydown', function(assert) {
+    pvm.handleKeydown();
 });
 
-QUnit.test( "The fullname is John Bertington", function(assert) {
-    assert.ok(avm.fullName() == "John Bertington");
+QUnit.test('handleEnd', function(assert) {
+    pvm.handleEnd();
+
+    assert.ok(pvm.moveTop() === false);
+    assert.ok(pvm.moveRight() === false);
+    assert.ok(pvm.moveBottom() === false);
+    assert.ok(pvm.moveRight() === false);
+    assert.ok(pvm.taped() === 0);
 });
