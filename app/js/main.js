@@ -2,23 +2,37 @@ function PawnViewModel() {
     var self = this;
 
     self.touchSupport    = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+    self.lockedMove      = ko.observable(false);
+    self.insight         = ko.observable(160);
+    
+    // position
     self.playerPositionX = ko.observable(0);
     self.playerPositionY = ko.observable(0);
     self.gridPositionX   = ko.observable(0);
     self.gridPositionY   = ko.observable(0);
-    self.lockedMove      = ko.observable(false);
+    
+    // key
     self.moveTop         = ko.observable(false);
     self.moveRight       = ko.observable(false);
     self.moveBottom      = ko.observable(false);
     self.moveLeft        = ko.observable(false);
-    self.stopMove        = ko.observable(false);
-    self.offset          = ko.observable(1);
-    self.insight         = ko.observable(160);
     self.spaceKey        = ko.observable(false);
     
+    // offset
+    self.offset          = ko.observable(1);
+    self.offsetMax       = ko.observable(10);
+    
+    // touch
+    self.currentY        = ko.observable(0);
+    self.currentX        = ko.observable(0);
+    self.lastY           = ko.observable(0);
+    self.lastX           = ko.observable(0);
+    self.approx          = ko.observable(5);
+    self.taped           = null;
+
 
     self.init = function() {
-        // touch management
+        // touch
         if (self.touchSupport) {
             document.addEventListener("touchstart", self.handleStart, false);
             document.addEventListener("touchend", self.handleEnd, false);
@@ -26,11 +40,11 @@ function PawnViewModel() {
             document.addEventListener("touchmove", self.handleMove, false);
         }
 
-        // resizing management
+        // resizing
         self.resizeContainer();
         window.addEventListener('resize', self.resizeContainer);
 
-        // keys management
+        // keys
         window.addEventListener("keydown", self.handleKeydown);
         window.addEventListener("keyup", self.handleKeyup);
 
@@ -41,12 +55,6 @@ function PawnViewModel() {
     self.loopGame = function() {
         self.handleAnimation();
 
-        // self.playerPositionX(self.playerPositionX() + 1);
-        // self.playerPositionY(self.playerPositionY() + 1);
-       
-        // self.gridPositionX(self.gridPositionX() + 1);
-        // self.gridPositionY(self.gridPositionY() + 1);
- 
         requestAnimationFrame(self.loopGame);
     }
 
@@ -55,11 +63,9 @@ function PawnViewModel() {
     }
 
     self.handleKeydown = function(eve) {
-        // console.log('handleKeydown', eve);
-
         if (self.lockedMove() === false) {
             if (eve.keyCode === 32) {
-                self.spaceKey(true);
+                self.spaceKey(!self.spaceKey());
             }
 
             if (eve.keyCode === 37) {
@@ -89,15 +95,32 @@ function PawnViewModel() {
         self.moveRight(false);
         self.moveBottom(false);
         self.moveLeft(false);
-        self.spaceKey(false);
+        // self.spaceKey(false);
     }
 
     self.handleStart = function(eve) {
-        console.log('handleStart', eve);
+        self.lastY(event.touches[0].clientY);
+        self.lastX(event.touches[0].clientX);
+
+        if (!self.tapped) {
+            self.tapped = setTimeout(function() {
+                // single tapped
+                self.tapped = null;
+                console.log('single', 'tapped');
+            }, 400);
+        }
+        else {
+            // double tapped
+            clearTimeout(self.tapped);
+            self.tapped = null;
+
+            self.spaceKey(!self.spaceKey());
+            console.log('double', 'tapped');
+        }
     }
 
     self.handleEnd = function(eve) {
-        console.log('handleEnd', eve);
+        self.handleKeyup();
     }
 
     self.handleCancel = function(eve) {
@@ -105,28 +128,50 @@ function PawnViewModel() {
     }
 
     self.handleMove = function(eve) {
-        console.log('handleMove', eve);
+        self.currentY(event.touches[0].clientY);
+        self.currentX(event.touches[0].clientX);
+       
+        if (self.lockedMove() === false) {
+            if (self.currentY() > (self.lastY() + self.approx())) {
+                self.lockedMove('bottom');
+                self.moveBottom(true);
+            }
+            else if (self.currentY() < (self.lastY() - self.approx())) {
+                self.lockedMove('top');
+                self.moveBottom(true);
+            }
+           
+            if (self.currentX() > (self.lastX() + self.approx())) {
+                self.lockedMove('right');
+                self.moveBottom(true);
+            }
+            else if (self.currentX() < (self.lastX() - self.approx())) {
+                self.lockedMove('left');
+                self.moveBottom(true);
+            }
+        }
+       
+        self.lastY(self.currentY());
+        self.lastX(self.currentX());
     }
 
     self.handleAnimation = function() {
-
         if (!self.moveLeft() && !self.moveTop() && !self.moveRight() && !self.moveBottom()) {
             if (self.offset() > 0) {
-                self.offset(self.offset() - 0.5);
+                self.offset(Math.round((self.offset() - 0.5) * 10) / 10);
             }
             else {
                 self.lockedMove(false);
-                self.stopMove(false);
                 self.offset(0);
             }
         }
         else {
             if (self.lockedMove() !== false) {
-                if (self.offset() < 10) {
-                    self.offset(self.offset() + 0.3);
+                if (self.offset() < self.offsetMax()) {
+                    self.offset(Math.round((self.offset() + 0.3) * 10) / 10);
                 }
-                else if (self.offset() > 10) {
-                    self.offset(10);
+                else if (self.offset() > self.offsetMax()) {
+                    self.offset(self.offsetMax());
                 }
             }
         }
@@ -173,7 +218,6 @@ function PawnViewModel() {
         if (self.lockedMove() === 'right') {
             if (self.playerPositionX() < (1920 - 70)) {
                 self.playerPositionX(self.playerPositionX() + Math.ceil(self.offset()));
-                // self.playerPositionX(self.playerPositionX() + 10);
      
                 if (self.playerPositionX() > (1920 - 70)) {
                     self.playerPositionX(1920 - 70);
@@ -214,270 +258,3 @@ function PawnViewModel() {
 var pvm = new PawnViewModel();
 ko.applyBindings(pvm);
 pvm.init();
-
-
-
-
-var supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
-var tapped = false;
-
-var currentY;
-var currentX;
-var lastY;
-var lastX;
-var approx = 5;
-
-var gridPositionX = 0;
-var gridPositionY = 0;
-var playerPositionX = 0;
-var playerPositionY = 0;
-
-
-var offset = 0;
-var insight = 160;
-
-
-var maxSpeed = 300;
-
-var lockedMove = null;
-var endMove = false;
-
-var keys = []
-keys[37] = false;
-keys[38] = false;
-keys[39] = false;
-keys[40] = false;
-
-
-window.onload = function init() {
-    if (supportsTouch) {
-        document.addEventListener("touchstart", handleStart, false);
-        document.addEventListener("touchend", handleEnd, false);
-        document.addEventListener("touchcancel", handleCancel, false);
-        document.addEventListener("touchmove", handleMove, false);
-       
-        // console.log("supportsTouch");
-    }
-
-    resizeContainer();
-    window.addEventListener('resize', resizeContainer);
-
-    gameLoop();
-}
-
-
-function resizeContainer() {
-    if (screen.width <= 800) {
-        $('.container').width(screen.width).height(screen.height);
-    }
-    else {
-        $('.container').width('800px').height('500px');
-    }
-}
-
-
-window.addEventListener("keydown", function (eve) {
-    if (lockedMove === null) {
-        keys[eve.keyCode] = true;
-        lockedMove = eve.keyCode;
-    }
-});
-
-window.addEventListener("keyup", function (eve) {
-    keys[eve.keyCode] = false;
-    // lockedMove = null;
-    // offset = 0;
-});
-
-
-
-function handleStart (event) {
-    lastY = event.touches[0].clientY;
-    lastX = event.touches[0].clientX;
-   
-    if (!tapped) {
-        tapped = setTimeout(function() {
-            // single tapped
-            tapped = null;
- 
-           // console.log('single', 'tapped');
-        }, 400);
-    }
-    else {
-        // double tapped
-        clearTimeout(tapped);
-        tapped = null;
- 
-        $("#player").css({"background": "red"});
-        // console.log('double', 'tapped');
-    }
-}
- 
-function handleEnd (event) {
-    // console.log('handleEnd');
-   
-    keys[37] = false;
-    keys[38] = false;
-    keys[39] = false;
-    keys[40] = false;
-   
-    // lockedMove = null;
-    // offset = 0;
-}
- 
-function handleCancel (event) {
-    console.log('handleCancel', event);
-}
- 
-function handleMove (event) {
-    // console.log('handleMove', keys);
-   
-    currentY = event.touches[0].clientY;
-    currentX = event.touches[0].clientX;
-   
-    if (lockedMove === null) {
-        // console.log('currentY', currentY, 'lastY', lastY, 'currentX', currentX, 'lastX', lastX);
-       
-        if (currentY > (lastY + approx)) {
-            // bottom
-            keys[40] = true;
-            lockedMove = 40;
-        }
-        else if (currentY < (lastY - approx)) {
-            // top
-            keys[38] = true;
-            lockedMove = 38;
-        }
-       
-        if (currentX > (lastX + approx)) {
-            // right
-            keys[39] = true;
-            lockedMove = 39;
-        }
-        else if (currentX < (lastX - approx)) {
-            // left
-            keys[37] = true;
-            lockedMove = 37;
-        }
-    }
-   
-    lastY = currentY;
-    lastX = currentX;
-}
- 
-function gameLoop() {
-    whatKey();
-   
-    $("#player").css({"transform":"translate(" + playerPositionX + "px, " + playerPositionY + "px)"});
-    $('#grid').css({"transform":"translate(" + gridPositionX + "px, " + gridPositionY + "px)"});
-   
-    $('#debugger').html("Player: " + playerPositionX + " " + playerPositionY
-        + "<br>Grid: " + gridPositionX + " " + gridPositionY
-        + "<br>Delta: " + (gridPositionX + playerPositionX) + " " + (gridPositionY + playerPositionY));
-   
-    requestAnimationFrame(gameLoop);
-}
- 
- 
-function whatKey() {
-    if (keys[37] === false && keys[38] === false && keys[39] === false && keys[40] === false) {
-        if (offset > 0) {
-            offset -= 0.5;
-            endMove = true;
-        }
- 
-        if (offset <= 0) {
-            lockedMove = null;
-            endMove = false;
-            offset = 0;
-        }
-    }
-    else {
-        if (lockedMove !== null) {
-            if (offset < 10) {
-                offset += 0.3;
-            }
-        }
-    }
-   
-    // left
-    if ((keys[37] || endMove) && (lockedMove === 37)) {
-        if (playerPositionX > 0) {
-            playerPositionX -= Math.ceil(offset);
- 
-            if (playerPositionX < 0) {
-                playerPositionX = 0;
-            }
-        }
-        
-        if ((gridPositionX + playerPositionX) < insight && gridPositionX < 0) {
-            gridPositionX += Math.ceil(offset);
- 
-            if (gridPositionX > 0) {
-                gridPositionX = 0;
-            }
-        }
-    }
-   
-    // top
-    if ((keys[38] || endMove) && (lockedMove === 38)) {
-        if (playerPositionY > 0) {
-            playerPositionY -= Math.ceil(offset);
- 
-            if (playerPositionY < 0) {
-                playerPositionY = 0;
-            }
-        }
- 
-        if ((gridPositionY + playerPositionY) < insight && gridPositionY < 0) {
-            gridPositionY += Math.ceil(offset);
- 
-            if (gridPositionY > 0) {
-                gridPositionY = 0;
-            }
-        }
-    }
-   
-    // right
-    if ((keys[39] || endMove) && (lockedMove === 39)) {
-        if (playerPositionX < (1920 - 70)) {
-            playerPositionX += Math.ceil(offset);
- 
-            if (playerPositionX > (1920 - 70)) {
-                playerPositionX = 1920 - 70;
-            }
-        }
-       
-        if ((gridPositionX + playerPositionX) > (800 - 70 - insight) && (gridPositionX * -1) < (1920 - 800)) {
-            gridPositionX -= Math.ceil(offset);
- 
-            if (gridPositionX < (-1920 + 800)) {
-                gridPositionX = (-1920 + 800);
-            }
-        }
-    }
-   
-    // bottom
-    if ((keys[40] || endMove) && (lockedMove === 40)) {
-        if (playerPositionY < (1920 - 70)) {
-            playerPositionY += Math.ceil(offset);
- 
-            if (playerPositionY > (1920 - 70)) {
-                playerPositionY = 1920 - 70;
-            }
-        }
-       
-        if ((gridPositionY + playerPositionY) > (500 - 70 - insight) && (gridPositionY * -1) < (1920 - 500)) {
-            gridPositionY -= Math.ceil(offset);
- 
-            if (gridPositionY < (-1920 + 500)) {
-                gridPositionY = (-1920 + 500);
-            }
-        }
-    }
-   
-    // space
-    if (keys[32]) {
-        $("#player").css({"background": "pink"});
-    }
-}
