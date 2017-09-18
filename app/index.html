@@ -3,42 +3,31 @@
 <head>
     <meta charset="utf-8">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
-    
+   
     <link rel="stylesheet" href="css/style.css"/>
     <title>Pawn</title>
 </head>
 <body>
-    <div class="container">
+    <div class="container" data-bind="style: {height: containerHeight() + 'px', width: containerWidth() + 'px'}">
         <div class="grid" data-bind="style: {transform: 'translate(' + gridPositionX() + 'px, ' + gridPositionY() + 'px)'}">
             <div class="player" data-bind="style: {'transform': 'translate(' + playerPositionX() + 'px, ' + playerPositionY() + 'px)'}, css: {'player--evo': spaceKey()}"></div>
         </div>
     </div>
-    
+   
     <div class="debugger">
         <!--
         <div>Player: <span data-bind="text: playerPositionX()"></span> <span data-bind="text: playerPositionX()"></span></div>
         <div>Grid: <span data-bind="text: gridPositionX()"></span> <span data-bind="text: gridPositionY()"></span></div>
         Delta: <span data-bind="text: (gridPositionX() + playerPositionX())"></span> <span data-bind="text: (gridPositionY() + playerPositionY())"></span>
-         -->
-        
+       
         <div>taped: <span data-bind="text: taped()"></span></div>
         <div>offset: <span data-bind="text: offset()"></span></div>
-        <div>lockedMove: <span data-bind="text: lockedMove()"></span></div>
+        <div>locked: <span data-bind="text: lockedMove()"></span></div>
+         -->
+        <div>height: <span data-bind="text: containerHeight()"></span></div>
+        <div>width: <span data-bind="text: containerWidth()"></span></div>
     </div>
-    
-    
-    
-    <!--
-    <div class="container">
-        <div id="grid" class="grid grid--bis">
-            <div id="player" class="player"></div>
-        </div>
-    </div>
-    
-    <div id="debugger" class="debugger debugger--bis"></div>
-     -->
-    
-    <script src="js/jquery.js"></script>
+   
     <script src="js/knockout.js"></script>
     <script src="js/main.js"></script>
 </body>
