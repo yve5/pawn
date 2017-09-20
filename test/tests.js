@@ -4,11 +4,11 @@ QUnit.test('resize container', function(assert) {
     assert.ok(pvm.containerWidth() === 800);
 
     pvm.resizeContainerByTesting(437, 972);
-    assert.ok(pvm.containerHeight() === 437);
+    assert.ok(pvm.containerHeight() === 500);
     assert.ok(pvm.containerWidth() === 800);
 
     pvm.resizeContainerByTesting(721, 452);
-    assert.ok(pvm.containerHeight() === 500);
+    assert.ok(pvm.containerHeight() === 721);
     assert.ok(pvm.containerWidth() === 452);
 });
 

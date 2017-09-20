@@ -17,47 +17,30 @@ html {
 
 
 @container-height    : 500px;
-// @container-width  :       @container-height * 1.618;
 @container-width     : 800px;
 @container-width-min : 320px;
 @container-height-min: (@container-width-min * 16) / 9;
-@cell-width          : 70px;
 
 @first-color         : #0482d4;
 @second-color        : #0072bc;
 @third-color         : #0B4FD3;
 
- 
 .container {
     background-color: #fff;
     position        : relative;
     overflow        : hidden;
     margin          : auto;
-    // height          : @container-height;
-    // width           : @container-width;
-
-    // @media only screen
-    //         and (max-device-width: (@container-width))
-    //         and (-webkit-min-device-pixel-ratio: 2) {
-    //     width: @container-width-min;
-    //     height: @container-height-min;
-    // }
 }
 
 .grid {
-    height             : 1920px;
-    width              : 1920px;
-    
     background-color   : @first-color;
     background-size    : 100px 100px, 100px 100px, 20px 20px, 20px 20px;
     background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
     background-image   : linear-gradient(@third-color 2px, transparent 2px), linear-gradient(90deg, @third-color 2px, transparent 2px), linear-gradient(@second-color 1px, transparent 1px), linear-gradient(90deg, @second-color 1px, transparent 1px);
 }
- 
+
 .player {
     background-color: lime;
-    height          : @cell-width;
-    width           : @cell-width;
 
     &--evo {
         background-color: orange;
@@ -69,7 +52,8 @@ html {
     text-align      : left;
     // border-radius: 0 0 0 5px;
     padding         : 5px;
-    position        : absolute;
-    bottom          : 0;
-    left            : 0;
+    
+    position: absolute;
+    bottom  : 0;
+    left    : 0;
 }
