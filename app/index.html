@@ -8,17 +8,15 @@
     <title>Pawn</title>
 </head>
 <body>
-    <div class="container" data-bind="style: {height: containerHeight() + 'px', width: containerWidth() + 'px'}">
-        <div class="grid" data-bind="style: {transform: 'translate(' + gridX() + 'px, ' + gridY() + 'px)', height: gridHeight() + 'px', width: gridWidth() + 'px'}">
-            <div class="player" data-bind="style: {'transform': 'translate(' + playerX() + 'px, ' + playerY() + 'px)', height: playerWidth() + 'px', width: playerWidth() + 'px'}, css: {'player--evo': spaceKey()}"></div>
-        </div>
-    </div>
-  
+    <canvas id="viewport" width="800" height="500"></canvas>
+    
     <div class="debugger">
-        <div>X <span data-bind="text: playerX"></span></div>
-        <div>Y <span data-bind="text: playerY"></span></div>
+        <div>playerX <span data-bind="text: playerX"></span></div>
+        <div>playerY <span data-bind="text: playerY"></span></div>
+        <div>gridX <span data-bind="text: gridX"></span></div>
+        <div>gridY <span data-bind="text: gridY"></span></div>
     </div>
-  
+    
     <script src="js/knockout.js"></script>
     <script src="js/main.js"></script>
 </body>

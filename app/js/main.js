@@ -15,10 +15,12 @@ function PawnViewModel() {
     self.initialHeight   = 500;
     self.containerWidth  = ko.observable(self.initialWidth);
     self.containerHeight = ko.observable(self.initialHeight);
-    self.gridWidth       = ko.observable(self.playerWidth() * 30);
-    self.gridHeight      = ko.observable(self.playerWidth() * 30);
+    // self.gridWidth       = ko.observable(self.playerWidth() * 30);
+    // self.gridHeight      = ko.observable(self.playerWidth() * 30);
+    self.gridWidth       = ko.observable(1920);
+    self.gridHeight      = ko.observable(1920);
 
-    //
+    // positions
     self.playerX         = ko.observable(0);
     self.playerY         = ko.observable(0);
     self.gridX           = ko.observable(0);
@@ -49,10 +51,25 @@ function PawnViewModel() {
     self.approx          = ko.observable(5);
     self.taped           = ko.observable(0);
 
+
+    self.canvas  = null;
+    self.context = null;
+
+
     //
     // not tested
 
     self.init = function() {
+        self.canvas = document.getElementById('viewport');
+
+        if (self.canvas.getContext) {
+            self.context = self.canvas.getContext('2d');
+        }
+        else {
+            console.error('Canvas context hasn\'t been catched...');
+            return;
+        }
+
         // touch
         if (self.touchSupport) {
             document.addEventListener("touchstart", self.handleStart, false);
@@ -74,11 +91,31 @@ function PawnViewModel() {
     }
 
     self.loopGame = function() {
+        self.drawContent();
+
         self.movePlayer();
         self.moveCamera();
         self.isTaped();
 
         requestAnimationFrame(self.loopGame);
+    }
+
+    self.drawContent = function() {
+        // self.context.clearRect(0, 0, 800, 500);
+ 
+        self.context.fillStyle = 'rgba(0, 255, 0, 0.7)';
+        self.context.fillRect(self.playerX(), self.playerY(), 70, 70);
+ 
+        // self.context.fillStyle = 'rgba(0, 0, 200, 0.5)';
+        // self.context.fillRect(30, 30, 70, 70);
+ 
+ 
+        var debugPattern = new Image();
+        debugPattern.src = 'img/debug-grid.png';
+ 
+        debugPattern.onload = function() {
+           self.context.drawImage(debugPattern, self.gridX(), self.gridY());
+        }
     }
 
     self.resizeContainer = function() {
