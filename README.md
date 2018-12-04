@@ -6,13 +6,15 @@ a) Install NodeJS
 
 b) Type the following lines inside a command-line terminal :
 <pre>
-npm install -g gulp
 npm install
-bower install
+npm start
 </pre>
 
-> If error appears, repeat again the command lines.
+## Build the project
 
+<pre>
+npm run Build
+</pre>
 
 ## Node_modules folder
 
@@ -23,28 +25,6 @@ Available solutions:
 - Type the following command line: *rimraf node_modules*
 
 > **rimraf** must be used WITH CAUTION. This command line can remove any file.
-
-
-## Gulp
-
-Type of these below command line inside a terminal:
-
-### Command lines
-
-| Command                    | Meaning                                                  |
-| -------------------------- | -------------------------------------------------------- |
-| **gulp** or **gulp serve** | Development server launching                             |
-| **gulp build**             | Project building in *dist* folder                        |
-
-### Development Environment
-
-Type the command line **gulp** in terminal.
-
-| URL Address               | Meaning                            |
-| ------------------------- | ---------------------------------- |
-| **http://localhost:1337** | Application interface              |
-| **http://localhost:1338** | UT interface                       |
-| **http://localhost:3001** | Configuration interface            |
 
 ## License
 
